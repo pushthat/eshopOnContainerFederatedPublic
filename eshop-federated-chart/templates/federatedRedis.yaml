@@ -1,0 +1,143 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  labels:
+    app: eshop
+    component: keystore-data
+  name: keystore-data-public
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    spec:
+      ports:
+      - port: 6379
+      selector:
+        app: eshop
+        component: keystore-data
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: keystore-data-public
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: keystore-data
+    spec:
+      selector:
+        matchLabels:
+          app: eshop
+      template:
+        metadata:
+          labels:
+            app: eshop
+            component: keystore-data
+        spec:
+          containers:
+          - name: keystore-data
+            image: redis
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  labels:
+    app: eshop
+    component: keystore-data
+  name: keystore-data-private
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    spec:
+      ports:
+      - port: 6379
+      selector:
+        app: eshop
+        component: keystore-data
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: keystore-data-private
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: keystore-data
+    spec:
+      selector:
+        matchLabels:
+          app: eshop
+      template:
+        metadata:
+          labels:
+            app: eshop
+            component: keystore-data
+        spec:
+          containers:
+          - name: keystore-data
+            image: redis
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  labels:
+    app: eshop
+    component: basket-data
+  name: basket-data
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    spec:
+      ports:
+      - port: 6379
+      selector:
+        app: eshop
+        component: basket-data
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: basket-data
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: basket-data
+    spec:
+      selector:
+        matchLabels:
+          app: eshop
+      template:
+        metadata:
+          labels:
+            app: eshop
+            component: basket-data
+        spec:
+          containers:
+          - name: basket-data
+            image: redis
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}

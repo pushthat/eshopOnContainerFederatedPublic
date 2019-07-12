@@ -1,0 +1,325 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: basket
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: basket
+      name: basket
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: basket
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: catalog
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: catalog
+      name: catalog
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: catalog
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: identity
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: identity
+      name: identity
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: identity
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ordering
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ordering
+      name: ordering
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: ordering
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ordering-background
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ordering-backgroundtasks
+      name: ordering-background
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: ordering-backgroundtasks
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ordering-signalrhub
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ordering-signalrhub
+      name: ordering-signalrhub
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: ordering-signalrhub
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: locations
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: locations
+      name: locations
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: locations
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: payment
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: payment
+      name: payment
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: payment
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: marketing
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: marketing
+      name: marketing
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: marketing
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: webshoppingagg
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webshoppingagg
+      name: webshoppingagg
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: webshoppingagg
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: mobileshoppingagg
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: mobileshoppingagg
+      name: mobileshoppingagg
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: mobileshoppingagg
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: webmvc
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webmvc
+      name: webmvc
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: webmvc
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: webstatus
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webstatus
+      name: webstatus
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: webstatus
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: webspa
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webspa
+      name: webspa
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: webspa
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: webspa-private
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    spec:
+      type: ClusterIP
+      ports:
+      - port: 80
+        targetPort: 80
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: payment-public
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    spec:
+      type: ClusterIP
+      ports:
+      - port: 80
+        targetPort: 80
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}

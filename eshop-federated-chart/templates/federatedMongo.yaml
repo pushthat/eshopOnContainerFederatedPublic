@@ -1,0 +1,49 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  labels:
+    app: eshop
+    component: nosql-data
+  name: nosql-data
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    spec:
+      ports:
+      - port: 27017
+      selector:
+        app: eshop
+        component: nosql-data
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: nosql-data
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: nosql-data
+    spec:
+      selector:
+        matchLabels:
+          app: eshop
+      template:
+        metadata:
+          labels:
+            app: eshop
+            component: nosql-data
+        spec:
+          containers:
+          - name: nosql-data
+            image: mongo
+            ports:
+            - containerPort: 27017
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}

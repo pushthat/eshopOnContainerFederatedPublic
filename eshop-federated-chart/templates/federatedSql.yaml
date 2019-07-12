@@ -1,0 +1,109 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  labels:
+    app: eshop
+    component: sql-data
+  name: sql-data-public
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    spec:
+      ports:
+      - port: 1433
+      selector:
+        app: eshop
+        component: sql-data
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: sql-data-public
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: sql-data-public
+    spec:
+      selector:
+        matchLabels:
+          app: eshop
+      template:
+        metadata:
+          labels:
+            app: eshop
+            component: sql-data
+        spec:
+          containers:
+          - name: sql-data-public
+            image: microsoft/mssql-server-linux:2017-latest
+            env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_PID
+              value: Developer
+            - name: MSSQL_SA_PASSWORD
+              value: Pass@word
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  labels:
+    app: eshop
+    component: sql-data
+  name: sql-data-private
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    spec:
+      ports:
+      - port: 1433
+      selector:
+        app: eshop
+        component: sql-data
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: sql-data-private
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: sql-data-private
+    spec:
+      selector:
+        matchLabels:
+          app: eshop
+      template:
+        metadata:
+          labels:
+            app: eshop
+            component: sql-data
+        spec:
+          containers:
+          - name: sql-data-private
+            image: microsoft/mssql-server-linux:2017-latest
+            env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_PID
+              value: Developer
+            - name: MSSQL_SA_PASSWORD
+              value: Pass@word
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}

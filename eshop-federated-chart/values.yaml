@@ -1,0 +1,41 @@
+# Default values for eshop-federated-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+context:
+  private:
+    name: "private"
+  public:
+    name: "public"
+
+namespaces:
+  private:
+    name: "private"
+  public:
+    name: "public"
+
+ip:
+  private:
+    addr: "10.0.0.1"
+  public:
+    addr: "10.0.0.2"
+
+domain:
+  private:
+    name: "private-domain.test.com"
+    tlsSecret: "private-cert"
+  public:
+    name: "public-domain.test.com"
+    tlsSecret: "public-cert"
+
+# RabbitMQ event bus
+eventBus:
+  eventBusAddr: "10.0.0.3"
+  eventBusUserName: "user"
+  eventBusPassword: "password"
+
+image:
+  # Eshop is the default that will pull the images from the registry
+  registryPrefix: "eshop"
+  # if a private registry is used you shall create a registry secret on kubernetes 
+  registrySecret: "registry-key"

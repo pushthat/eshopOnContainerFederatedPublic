@@ -1,0 +1,19 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedNamespace
+metadata:
+  name: {{ .Values.namespaces.public.name }}
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedNamespace
+metadata:
+  name: {{ .Values.namespaces.private.name }}
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}

@@ -1,0 +1,813 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: apigwmm
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: apigwmm
+    spec:
+      selector:
+        matchLabels:
+          app: apigwmm
+      template:
+        metadata:
+          labels:
+            app: apigwmm
+        spec:
+          containers:
+          - name: apigwmm
+            image: {{ .Values.image.registryPrefix}}/ocelotapigw:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity
+            - name: PATH_BASE
+              value: /mobilemarketingapigw
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80   
+            volumeMounts:
+            - name: config
+              mountPath: /app/configuration            
+          volumes:
+          - name: config
+            configMap:
+              type: array
+              name: ocelot
+              items:
+              - key: mm
+                path: configuration.json
+          # imagePullSecrets:
+          # - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: apigwms
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: apigwms
+    spec:
+      selector:
+        matchLabels:
+          app: apigwms
+      template:
+        metadata:
+          labels:
+            app: apigwms
+        spec:
+          containers:
+          - name: apigwms
+            image: {{ .Values.image.registryPrefix}}/ocelotapigw:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: CallBackUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: mvc_e
+            - name: IdentityUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: PATH_BASE
+              value: /mobileshoppingapigw        
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80   
+            volumeMounts:
+            - name: config
+              mountPath: /app/configuration            
+          volumes:
+          - name: config
+            configMap:
+              type: array
+              name: ocelot
+              items:
+              - key: ms
+                path: configuration.json
+          # imagePullSecrets:
+          # - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: apigwwm
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: apigwwm
+    spec:
+      selector:
+        matchLabels:
+          app: apigwwm
+      template:
+        metadata:
+          labels:
+            app: apigwwm
+        spec:
+          containers:
+          - name: apigwwm
+            image: {{ .Values.image.registryPrefix}}/ocelotapigw:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: CallBackUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: mvc_e
+            - name: IdentityUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: PATH_BASE
+              value: /webmarketingapigw    
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80   
+            volumeMounts:
+            - name: config
+              mountPath: /app/configuration            
+          volumes:
+          - name: config
+            configMap:
+              name: ocelot
+              type: array
+              items:
+              - key: wm
+                path: configuration.json
+          # imagePullSecrets:
+          # - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: apigwws
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: apigwws
+    spec:
+      selector:
+        matchLabels:
+          app: apigwws
+      template:
+        metadata:
+          labels:
+            app: apigwws
+        spec:
+          containers:
+          - name: apigwws
+            image: {{ .Values.image.registryPrefix}}/ocelotapigw:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'
+            # - name: CallBackUrl
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: urls
+            #       key: mvc_e
+            # - name: IdentityUrl
+            #   valueFrom:
+            #    configMapKeyRef:
+            #      name: urls
+            #      key: identity_e
+            - name: IdentityUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e
+            - name: OrderingUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: ordering
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: PATH_BASE
+              value: /webshoppingapigw 
+            # - name: IdentityUrl
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: internalurls
+            #       key: identity                         
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80   
+            volumeMounts:
+            - name: config
+              mountPath: /app/configuration            
+          volumes:
+          - name: config
+            configMap:
+              name: ocelot
+              type: array
+              items:
+              - key: ws
+                path: configuration.json
+          # imagePullSecrets:
+          # - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: apigwmm
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: apigwmm
+    spec:
+      selector:
+        matchLabels:
+          app: apigwmm
+      template:
+        metadata:
+          labels:
+            app: apigwmm
+        spec:
+          containers:
+          - name: apigwmm
+            image: {{ .Values.image.registryPrefix}}/ocelotapigw:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity
+            - name: PATH_BASE
+              value: /mobilemarketingapigw
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80   
+            volumeMounts:
+            - name: config
+              mountPath: /app/configuration            
+          volumes:
+          - name: config
+            configMap:
+              type: array
+              name: ocelot
+              items:
+              - key: mm
+                path: configuration.json
+          # imagePullSecrets:
+          # - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: apigwms
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: apigwms
+    spec:
+      selector:
+        matchLabels:
+          app: apigwms
+      template:
+        metadata:
+          labels:
+            app: apigwms
+        spec:
+          containers:
+          - name: apigwms
+            image: {{ .Values.image.registryPrefix}}/ocelotapigw:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: CallBackUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: mvc_e
+            - name: IdentityUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: PATH_BASE
+              value: /mobileshoppingapigw        
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80   
+            volumeMounts:
+            - name: config
+              mountPath: /app/configuration            
+          volumes:
+          - name: config
+            configMap:
+              type: array
+              name: ocelot
+              items:
+              - key: ms
+                path: configuration.json
+          # imagePullSecrets:
+          # - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: apigwwm
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: apigwwm
+    spec:
+      selector:
+        matchLabels:
+          app: apigwwm
+      template:
+        metadata:
+          labels:
+            app: apigwwm
+        spec:
+          containers:
+          - name: apigwwm
+            image: {{ .Values.image.registryPrefix}}/ocelotapigw:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: CallBackUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: mvc_e
+            - name: IdentityUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: PATH_BASE
+              value: /webmarketingapigw    
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80   
+            volumeMounts:
+            - name: config
+              mountPath: /app/configuration            
+          volumes:
+          - name: config
+            configMap:
+              name: ocelot
+              type: array
+              items:
+              - key: wm
+                path: configuration.json
+          # imagePullSecrets:
+          # - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: apigwws
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: apigwws
+    spec:
+      selector:
+        matchLabels:
+          app: apigwws
+      template:
+        metadata:
+          labels:
+            app: apigwws
+        spec:
+          containers:
+          - name: apigwws
+            image: {{ .Values.image.registryPrefix}}/ocelotapigw:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: CallBackUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: mvc_e
+            - name: IdentityUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: PATH_BASE
+              value: /webshoppingapigw 
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity                         
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80   
+            volumeMounts:
+            - name: config
+              mountPath: /app/configuration            
+          volumes:
+          - name: config
+            configMap:
+              name: ocelot
+              type: array
+              items:
+              - key: ws
+                path: configuration.json
+          # imagePullSecrets:
+          # - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}

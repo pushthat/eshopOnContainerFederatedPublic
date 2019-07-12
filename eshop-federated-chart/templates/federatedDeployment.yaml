@@ -1,0 +1,1236 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: ordering-signalrhub
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ordering-signalrhub
+    spec:
+      selector:
+        matchLabels:
+          app: ordering-signalrhub
+      template:
+        metadata:
+          labels:
+            app: ordering-signalrhub
+        spec:
+          containers:
+          - name: ordering-signalrhub
+            image: {{ .Values.image.registryPrefix}}/ordering.signalrhub:dev
+            imagePullPolicy: Always
+            env:                
+            - name: EventBusConnection
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusConnection
+            - name: EventBusUserName
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusUserName
+            - name: EventBusPassword
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusPassword
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: identity_e
+            - name: AzureServiceBusEnabled
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__UseAzureServiceBus                
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey        
+            - name: OrchestratorType
+              value: 'K8S'  
+            - name: IsClusterEnv
+              value: 'True'
+            - name: SignalrStoreConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: keystore
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name:  {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: locations
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: locations
+    spec:
+      selector:
+        matchLabels:
+          app: locations
+      template:
+        metadata:
+          labels:
+            app: locations
+        spec:
+          containers:
+          - name: locations
+            image: {{ .Values.image.registryPrefix}}/locations.api:dev
+            imagePullPolicy: Always
+            env:
+            - name: PATH_BASE
+              value: /locations-api
+            - name: ConnectionString
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: locations__ConnectionString
+            - name: Database
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: locations__Database
+            - name: AzureServiceBusEnabled
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__UseAzureServiceBus
+            - name: EventBusConnection
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusConnection
+            - name: EventBusUserName
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusUserName
+            - name: EventBusPassword
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusPassword
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity
+            - name: IdentityUrlExternal
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: identity_e
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey
+            - name: UseLoadTest
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EnableLoadTest
+            - name: OrchestratorType
+              value: 'K8S'          
+            ports:
+            - containerPort: 80        
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: payment
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: payment
+    spec:
+      selector:
+        matchLabels:            
+          app: payment
+      template:
+        metadata:
+          labels:
+            app: payment
+        spec:
+          containers:
+          - name: payment
+            image: {{ .Values.image.registryPrefix}}/payment.api:dev
+            imagePullPolicy: Always
+            env:
+            - name: PATH_BASE
+              value: /payment-api
+            - name: AzureServiceBusEnabled
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__UseAzureServiceBus
+            - name: EventBusConnection
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusConnection
+            - name: EventBusUserName
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusUserName
+            - name: EventBusPassword
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusPassword
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey
+            - name: OrchestratorType
+              value: 'K8S'
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}      
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: webmvc
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webmvc
+    spec:
+      selector:
+        matchLabels:
+          app: webmvc
+      template:
+        metadata:
+          labels:
+            app: webmvc
+        spec:
+          containers:
+          - name: webmvc
+            image: {{ .Values.image.registryPrefix}}/webmvc:dev
+            imagePullPolicy: Always
+            env:
+            - name: PATH_BASE
+              value: /webmvc
+            - name: DPConnectionString
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: keystore
+            - name: IsClusterEnv
+              value: 'True'
+            - name: PurchaseUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: apigwws   
+            - name: ExternalPurchaseUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: webshoppingapigw_e       
+            - name: CallBackUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: mvc_e
+            - name: IdentityUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: apigwwm 
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc
+            - name: PurchaseUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: purchase__hc
+            - name: CatalogUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc  
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc  
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey
+            - name: UseLoadTest
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__EnableLoadTest
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: OrchestratorType
+              value: 'K8S'
+            - name: SignalrHubUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: webshoppingapigw_e    
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: webstatus
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webstatus
+    spec:
+      selector:
+        matchLabels:
+          app: webstatus
+      template:
+        metadata:
+          labels:
+            app: webstatus
+        spec:
+          containers:
+          - name: webstatus
+            image: {{ .Values.image.registryPrefix}}/webstatus:dev
+            imagePullPolicy: Always
+            env:
+            - name: PATH_BASE
+              value: /webstatus
+            - name: BasketUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: basket__hc
+            - name: CatalogUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: catalog__hc
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity__hc
+            - name: OrderingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: OrderingBackgroundTasksUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering-background__hc
+            - name: LocationsUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            - name: MarketingUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: marketing__hc
+            - name: mvc
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: mvc__hc
+            - name: spa
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: spa__hc
+            - name: PaymentUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: internalurls
+                 key: payment__hc 
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey  
+            - name: OrchestratorType
+              value: 'K8S'       
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: webspa
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webspa
+    spec:
+      selector:
+        matchLabels:
+          app: webspa
+      template:
+        metadata:
+          labels:
+            app: webspa
+        spec:
+          containers:
+          - name: webspa
+            image: {{ .Values.image.registryPrefix}}/webspa:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_URLS
+              value: http://0.0.0.0:80
+            - name: DPConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: keystore
+            - name: IsClusterEnv
+              value: 'True'
+            - name: PurchaseUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: webshoppingapigw_e
+            - name: CallBackUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: spa_e
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: identity_e
+            - name: MarketingUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: marketingapigw_e
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc        
+            - name: CatalogUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: catalog__hc
+            - name: IdentityUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: MarketingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: marketing__hc
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey
+            - name: OrchestratorType
+              value: 'K8S'
+            - name: SignalrHubUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: webshoppingapigw_e
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: webshoppingagg
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: webshoppingagg
+    spec:
+      selector:
+        matchLabels:
+          app: webshoppingagg
+      template:
+        metadata:
+          labels:
+            app: webshoppingagg
+        spec:
+          containers:
+          - name: webshoppingagg
+            image: {{ .Values.image.registryPrefix}}/webshoppingagg:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'
+            - name: ASPNETCORE_URLS
+              value: http://0.0.0.0:80
+            - name: urls__basket
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket
+            - name: urls__catalog
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: catalog
+            - name: urls__orders
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering             
+            - name: urls__identity
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity        
+            - name: CatalogUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: catalog__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc
+            - name: IdentityUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity__hc
+            - name: MarketingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: marketing__hc
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: mobileshoppingagg
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: mobileshoppingagg
+    spec:
+      selector:
+        matchLabels:
+          app: mobileshoppingagg
+      template:
+        metadata:
+          labels:
+            app: mobileshoppingagg
+        spec:
+          containers:
+          - name: mobileshoppingagg
+            image: {{ .Values.image.registryPrefix}}/mobileshoppingagg:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_URLS
+              value: http://0.0.0.0:80
+            - name: urls__basket
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket
+            - name: urls__catalog
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: catalog
+            - name: urls__orders
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering             
+            - name: urls__identity
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity        
+            - name: CatalogUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: catalog__hc
+            - name: OrderingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: ordering__hc
+            - name: BasketUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: basket__hc
+            - name: IdentityUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity__hc
+            - name: MarketingUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: marketing__hc
+            - name: PaymentUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: payment__hc
+            - name: LocationUrlHC
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: locations__hc
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: marketing
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: marketing
+    spec:
+      selector:
+        matchLabels:
+          app: marketing
+      template:
+        metadata:
+          labels:
+            app: marketing
+        spec:
+          containers:
+          - name: marketing
+            image: {{ .Values.image.registryPrefix}}/marketing.api:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'    
+            - name: PATH_BASE
+              value: /marketing-api
+            - name: ConnectionString
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: marketing__ConnectionString
+            - name: MongoConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: marketing__MongoConnectionString
+            - name: MongoDatabase
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: marketing__MongoDatabase 
+            - name: AzureServiceBusEnabled
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__UseAzureServiceBus
+            - name: EventBusConnection
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusConnection
+            - name: EventBusUserName
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusUserName
+            - name: EventBusPassword
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusPassword
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: internalurls
+                  key: identity
+            - name: IdentityUrlExternal
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e             
+            - name: PicBaseUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: Marketing_PicBaseUrl 
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey
+            - name: UseLoadTest
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__EnableLoadTest
+            - name: OrchestratorType
+              value: 'K8S'
+            ports:
+            - containerPort: 80            
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: basket
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: basket
+    spec:
+      selector:
+        matchLabels:
+          app: basket
+      template:
+        metadata:
+          labels:
+            app: basket
+        spec:
+          containers:
+          - name: basket
+            image: {{ .Values.image.registryPrefix}}/basket.api:dev
+            imagePullPolicy: Always
+            env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: 'Development'
+            - name: PATH_BASE
+              value: /basket-api
+            - name: ConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: basket__ConnectionString
+            - name: EventBusConnection
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusConnection
+            - name: EventBusUserName
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusUserName
+            - name: EventBusPassword
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusPassword
+            - name: AzureServiceBusEnabled
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__UseAzureServiceBus
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey
+            - name: IdentityUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: identity_e
+            - name: UseLoadTest
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__EnableLoadTest
+            - name: OrchestratorType
+              value: 'K8S'
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: catalog
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: catalog
+    spec:
+      selector:
+        matchLabels:
+          app: catalog
+      template:
+        metadata:
+          labels:
+            app: catalog
+        spec:
+          containers:
+          - name: catalog
+            image: {{ .Values.image.registryPrefix}}/catalog.api:dev
+            imagePullPolicy: Always
+            env:
+            - name: PATH_BASE
+              value: /catalog-api
+            - name: ConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: catalog__ConnectionString
+            - name: PicBaseUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: PicBaseUrl
+            - name: AzureStorageEnabled
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: catalog__AzureStorageEnabled
+            - name: EventBusConnection
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusConnection
+            - name: EventBusUserName
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusUserName
+            - name: EventBusPassword
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusPassword
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey
+            - name: OrchestratorType
+              value: 'K8S' 
+            ports:
+            - containerPort: 80            
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: identity
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: identity
+    spec:
+      selector:
+        matchLabels:
+          app: identity
+      template:
+        metadata:
+          labels:
+            app: identity
+        spec:
+          containers:
+          - name: identity
+            image: {{ .Values.image.registryPrefix}}/identity.api:dev
+            imagePullPolicy: Always
+            env:
+            - name: PATH_BASE
+              value: /identity
+            - name: ConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: identity__ConnectionString
+            - name: DPConnectionString
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: keystore
+            - name: IsClusterEnv
+              value: 'True'
+            - name: MvcClient
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: mvc_e
+            - name: SpaClient
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: spa_e
+            - name: LocationApiClient
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: locations_e
+            - name: MarketingApiClient
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: marketing_e
+            - name: BasketApiClient
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: basket_e 
+            - name: OrderingApiClient
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: ordering_e  
+            - name: MobileShoppingAggClient
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: mobileshoppingagg_e       
+            - name: WebShoppingAggClient
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: webshoppingagg_e
+            - name: XamarinCallback
+              valueFrom:
+                configMapKeyRef:
+                  name: urls
+                  key: xamarin_callback_e
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey 
+            - name: OrchestratorType
+              value: 'K8S'                            
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: ordering
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ordering
+    spec:
+      selector:
+        matchLabels:
+          app: ordering
+      template:
+        metadata:
+          labels:
+            app: ordering
+        spec:
+          containers:
+          - name: ordering
+            image: {{ .Values.image.registryPrefix}}/ordering.api:dev
+            imagePullPolicy: Always
+            env:
+            - name: PATH_BASE
+              value: /ordering-api
+            - name: ConnectionString
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: ordering__ConnectionString
+            - name: EventBusConnection
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusConnection
+            - name: EventBusUserName
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusUserName
+            - name: EventBusPassword
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusPassword
+            - name: AzureServiceBusEnabled
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__UseAzureServiceBus
+            - name: IdentityUrl
+              valueFrom:
+               configMapKeyRef:
+                 name: urls
+                 key: identity_e
+            - name: CheckUpdateTime
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: GracePeriodManager__CheckUpdateTime
+            - name: GracePeriodTime
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: GracePeriodManager__GracePeriodTime  
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__InstrumentationKey
+            - name: UseLoadTest
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__EnableLoadTest
+            - name: OrchestratorType
+              value: 'K8S'           
+            ports:
+            - containerPort: 80
+            
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedDeployment
+metadata:
+  name: ordering-backgroundtasks
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ordering-backgroundtasks
+    spec:
+      selector:
+        matchLabels:
+          app: ordering-backgroundtasks
+      template:
+        metadata:
+          labels:
+            app: ordering-backgroundtasks
+        spec:
+          containers:
+          - name: ordering-backgroundtasks
+            image: {{ .Values.image.registryPrefix}}/ordering.backgroundtasks:dev
+            imagePullPolicy: Always
+            env:        
+            - name: ConnectionString
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: ordering__ConnectionString
+            - name: EventBusConnection
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusConnection
+            - name: EventBusUserName
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusUserName
+            - name: EventBusPassword
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: all__EventBusPassword
+            - name: AzureServiceBusEnabled
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__UseAzureServiceBus        
+            - name: CheckUpdateTime
+              valueFrom:
+               configMapKeyRef:
+                 name: externalcfg
+                 key: GracePeriodManager__CheckUpdateTime
+            - name: GracePeriodTime
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: GracePeriodManager__GracePeriodTime  
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__InstrumentationKey
+            - name: UseLoadTest
+              valueFrom:
+                configMapKeyRef:
+                  name: externalcfg
+                  key: all__EnableLoadTest
+            - name: OrchestratorType
+              value: 'K8S'     
+            ports:
+            - containerPort: 80
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}

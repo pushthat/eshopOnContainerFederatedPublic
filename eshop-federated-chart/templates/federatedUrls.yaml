@@ -1,0 +1,53 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedConfigMap
+metadata:
+  name: urls
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    data:
+      PicBaseUrl: https://{{ .Values.domain.public.name }}/webshoppingapigw/api/v1/c/catalog/items/[0]/pic/
+      Marketing_PicBaseUrl: https://{{ .Values.domain.public.name }}/webmarketingapigw/api/v1/m/campaigns/[0]/pic/
+      mvc_e: https://{{ .Values.domain.public.name }}/webmvc
+      marketingapigw_e: https://{{ .Values.domain.public.name }}/webmarketingapigw
+      webshoppingapigw_e: https://{{ .Values.domain.public.name }}/webshoppingapigw
+      mobileshoppingagg_e: https://{{ .Values.domain.public.name }}/mobileshoppingagg
+      webshoppingagg_e: https://{{ .Values.domain.public.name }}/webshoppingagg
+      identity_e: https://{{ .Values.domain.public.name }}/identity
+      spa_e: https://{{ .Values.domain.public.name }}
+      locations_e: https://{{ .Values.domain.public.name }}/locations-api
+      marketing_e: https://{{ .Values.domain.public.name }}/marketing-api
+      basket_e: https://{{ .Values.domain.public.name }}/basket-api
+      IdentityUrl: https://{{ .Values.domain.public.name }}/identity
+      ordering_e: https://{{ .Values.domain.public.name }}/ordering-api
+      xamarin_callback_e: https://{{ .Values.domain.public.name }}/xamarincallback
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedConfigMap
+metadata:
+  name: urls
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    data:
+      PicBaseUrl: https://{{ .Values.domain.public.name }}/webshoppingapigw/api/v1/c/catalog/items/[0]/pic/
+      Marketing_PicBaseUrl: https://{{ .Values.domain.public.name }}/webmarketingapigw/api/v1/m/campaigns/[0]/pic/
+      mvc_e: https://{{ .Values.domain.public.name }}/webmvc
+      IdentityUrl: https://{{ .Values.domain.public.name }}/identity
+      marketingapigw_e: https://{{ .Values.domain.public.name }}/webmarketingapigw
+      webshoppingapigw_e: https://{{ .Values.domain.public.name }}/webshoppingapigw
+      mobileshoppingagg_e: https://{{ .Values.domain.public.name }}/mobileshoppingagg
+      webshoppingagg_e: https://{{ .Values.domain.public.name }}/webshoppingagg
+      identity_e: https://{{ .Values.domain.public.name }}/identity
+      spa_e: https://{{ .Values.domain.public.name }}
+      locations_e: https://{{ .Values.domain.public.name }}/locations-api
+      marketing_e: https://{{ .Values.domain.public.name }}/marketing-api
+      basket_e: https://{{ .Values.domain.public.name }}/basket-api
+      ordering_e: https://{{ .Values.domain.public.name }}/ordering-api
+      xamarin_callback_e: https://{{ .Values.domain.public.name }}/xamarincallback
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}

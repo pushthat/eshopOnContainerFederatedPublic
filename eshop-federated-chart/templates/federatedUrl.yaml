@@ -1,0 +1,77 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedConfigMap
+metadata:
+  name: internalurls
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    data:
+    # Internal Services & healthchecks
+      basket: http://basket
+      basket__hc: http://basket/hc
+      catalog: http://catalog
+      catalog__hc: http://catalog/hc
+      identity: http://identity
+      identity__hc: http://identity/hc
+      ordering: http://ordering
+      ordering__hc: http://ordering/hc
+      ordering-background: http://ordering-background
+      ordering-background__hc: http://ordering-background/hc
+      marketing: http://marketing
+      marketing__hc: http://marketing/hc
+      locations: http://locations
+      locations__hc: http://locations/hc
+      payment__hc: http://payment/hc
+      mvc__hc: http://webmvc/hc
+      spa__hc: http://webspa/hc
+      purchase__hc: http://webshoppingapigw/hc
+    # Aggreggators
+      mobileshoppingagg: http://mobileshoppingagg
+      webshoppingagg: http://webshoppingagg
+    # API GWs
+      apigwmm: http://ocelotapigw-mm
+      apigwms: http://ocelotapigw-ms
+      apigwwm: http://ocelotapigw-wm
+      apigwws: http://ocelotapigw-ws
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedConfigMap
+metadata:
+  name: internalurls
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    data:
+      # Internal Services & healthchecks
+      basket: http://basket
+      basket__hc: http://basket/hc
+      catalog: http://catalog
+      catalog__hc: http://catalog/hc
+      identity: "https://{{ .Values.domain.private.name }}/identity"
+      identity__hc: "https://{{ .Values.domain.private.name }}/identity/hc"
+      ordering: "https://{{ .Values.domain.private.name }}/ordering"
+      ordering__hc: "https://{{ .Values.domain.private.name }}/ordering/hc"
+      ordering-background: "https://{{ .Values.domain.private.name }}"
+      ordering-background__hc: "https://{{ .Values.domain.private.name }}/hc"
+      marketing: http://marketing
+      marketing__hc: http://marketing/hc
+      locations: http://locations
+      locations__hc: http://locations/hc
+      payment__hc: http://payment/hc
+      mvc__hc: http://webmvc/hc
+      spa__hc: http://webspa/hc
+      purchase__hc: http://webshoppingapigw/hc
+      # Aggreggators
+      mobileshoppingagg: http://mobileshoppingagg                                                                                                                                                                
+      webshoppingagg: http://webshoppingagg
+      # API GWs
+      apigwmm: http://ocelotapigw-mm
+      apigwms: http://ocelotapigw-ms
+      apigwwm: http://ocelotapigw-wm
+      apigwws: http://ocelotapigw-ws
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}

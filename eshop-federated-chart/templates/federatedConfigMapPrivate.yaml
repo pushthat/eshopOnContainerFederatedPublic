@@ -1,0 +1,30 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedConfigMap
+metadata:
+  name: externalcfg
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    data:
+      basket__ConnectionString: basket-data
+      catalog__ConnectionString: Server=sql-data;Initial Catalog=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=Pass@word;
+      catalog__AzureStorageEnabled: "False"
+      identity__ConnectionString: Server=sql-data-private;Initial Catalog=Microsoft.eShopOnContainers.Services.IdentityDb;User Id=sa;Password=Pass@word;
+      locations__ConnectionString: mongodb://nosql-data-private
+      locations__Database: LocationsDb
+      marketing__MongoConnectionString: mongodb://nosql-data-private
+      marketing__MongoDatabase: MarketingDb
+      marketing__ConnectionString: Server=sql-data;Initial Catalog=Microsoft.eShopOnContainers.Services.MarketingDb;User Id=sa;Password=Pass@word;
+      ordering__ConnectionString: Server=sql-data-private;Initial Catalog=Microsoft.eShopOnContainers.Services.OrderingDb;User Id=sa;Password=Pass@word;
+      keystore: keystore-data-private
+      GracePeriodManager__GracePeriodTime: "1"
+      GracePeriodManager__CheckUpdateTime: "15000"
+      all__EventBusConnection: {{ .Values.eventBus.eventBusAddr }}
+      all__EventBusUserName: {{ .Values.eventBus.eventBusUserName }}
+      all__EventBusPassword: {{ .Values.eventBus.eventBusPassword }}
+      all__InstrumentationKey: ""
+      all__EnableLoadTest: "False"
+      all__UseAzureServiceBus: "False"
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}

@@ -1,0 +1,59 @@
+trigger:
+  branches:
+    include:
+    - master
+    - dev
+  paths:
+    include:
+    - src/BuildingBlocks/*
+    - src/Web/WebSPA/*
+    - k8s/helm/webspa/*
+variables:
+    azureContainerRegistry: eshoponcontainer.azurecr.io
+    azureSubscriptionEndpoint: eshopOnContainer
+    REGISTRY: eshoponcontainer.azurecr.io
+jobs:
+  - job: buildImage
+    pool:
+      vmImage: 'ubuntu-16.04'
+    steps:
+    - task: DockerCompose@0
+      displayName: Compose build webspa
+      inputs:
+        dockerComposeCommand: 'build webspa'
+        azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+        azureContainerRegistry: $(azureContainerRegistry)
+        dockerComposeFile: docker-compose.yml
+        qualifyImageNames: true
+        projectName: ""
+        dockerComposeFileArgs: |
+          TAG=$(Build.SourceVersion)
+    - task: DockerCompose@0
+      displayName: Compose push webspa
+      inputs:
+        dockerComposeCommand: 'push webspa'
+        containerregistrytype: Azure Container Registry
+        azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+        azureContainerRegistry: $(azureContainerRegistry)
+        dockerComposeFile: docker-compose.yml
+        qualifyImageNames: true
+        projectName: ""
+        dockerComposeFileArgs: |
+          TAG=$(Build.SourceVersion)
+    - task: CopyFiles@2
+      inputs:
+        sourceFolder: $(Build.SourcesDirectory)/k8s/helm    
+        targetFolder: $(Build.ArtifactStagingDirectory)/k8s/helm
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathtoPublish: $(Build.ArtifactStagingDirectory)/k8s/helm
+        artifactName: helm
+  - job: deployToKube
+    dependsOn: buildImage
+    pool:
+      # This agent should be installed on a server that have admin access to the cluster
+      name: eshop-deploy
+    steps:
+    # simple script that update a container image PRIVATE_CONTEXT and PUBLIC_NAMESPACE variables should be change accordingly
+    - script: |
+        kubectl --context $PRIVATE_CONTEXT -n $PUBLIC_NAMESPACE patch federateddeployment webspa --type=json -p '[{"op": "replace", "path": "/spec/template/spec/template/spec/containers/0/image", "value":"eshoponcontainer.azurecr.io/webspa:$(Build.SourceVersion)"}]'

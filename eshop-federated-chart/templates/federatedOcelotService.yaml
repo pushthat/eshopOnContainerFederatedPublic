@@ -1,0 +1,167 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ocelotapigw-mm
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ocelotapigw-mm
+      name: ocelotapigw-mm
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: apigwmm
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ocelotapigw-ms
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ocelotapigw-ms
+      name: ocelotapigw-ms
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: apigwms
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ocelotapigw-wm
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ocelotapigw-wm
+      name: ocelotapigw-wm
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: apigwwm
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ocelotapigw-ws
+  namespace: {{ .Values.namespaces.public.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ocelotapigw-ws
+      name: ocelotapigw-ws
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: apigwws
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ocelotapigw-mm
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ocelotapigw-mm
+      name: ocelotapigw-mm
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: apigwmm
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ocelotapigw-ms
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ocelotapigw-ms
+      name: ocelotapigw-ms
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: apigwms
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ocelotapigw-wm
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ocelotapigw-wm
+      name: ocelotapigw-wm
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: apigwwm
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
+---
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedService
+metadata:
+  name: ocelotapigw-ws
+  namespace: {{ .Values.namespaces.private.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: eshop
+        component: ocelotapigw-ws
+      name: ocelotapigw-ws
+    spec:
+      ports:
+      - port: 80
+      selector:
+        app: apigwws
+  placement:
+    clusters:
+    - name: {{ .Values.context.private.name }}
