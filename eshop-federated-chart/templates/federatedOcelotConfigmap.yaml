@@ -1,0 +1,145 @@
+apiVersion: types.kubefed.k8s.io/v1beta1
+kind: FederatedConfigMap
+metadata:
+  name: ocelot
+spec:
+  placement:
+    clusterSelector:
+      matchLabels: {}
+  template:
+    data:
+      mm: "{\r\n  \"ReRoutes\": [\r\n    {\r\n      \"DownstreamPathTemplate\": \"/api/{version}/{everything}\",\r\n
+        \     \"DownstreamScheme\": \"http\",\r\n      \"DownstreamHostAndPorts\":
+        [\r\n        {\r\n          \"Host\": \"marketing\",\r\n          \"Port\":
+        80\r\n        }\r\n      ],\r\n      \"UpstreamPathTemplate\": \"/api/{version}/m/{everything}\",\r\n
+        \     \"UpstreamHttpMethod\": []\r\n    },\r\n    {\r\n      \"DownstreamPathTemplate\":
+        \"/api/{version}/{everything}\",\r\n      \"DownstreamScheme\": \"http\",\r\n
+        \     \"DownstreamHostAndPorts\": [\r\n        {\r\n          \"Host\": \"locations\",\r\n
+        \         \"Port\": 80\r\n        }\r\n      ],\r\n      \"UpstreamPathTemplate\":
+        \"/api/{version}/l/{everything}\",\r\n      \"UpstreamHttpMethod\": []\r\n
+        \   }\r\n\r\n  ],\r\n  \"GlobalConfiguration\": {\r\n    \"RequestIdKey\":
+        \"OcRequestId\",\r\n    \"AdministrationPath\": \"/administration\"\r\n  }\r\n}\r\n
+        \ "
+      ms: "{\r\n    \"ReRoutes\": [\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/api/{version}/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n
+        \       \"DownstreamHostAndPorts\": [\r\n          {\r\n            \"Host\":
+        \"catalog\",\r\n            \"Port\": 80\r\n          }\r\n        ],\r\n
+        \       \"UpstreamPathTemplate\": \"/api/{version}/c/{everything}\",\r\n        \"UpstreamHttpMethod\":
+        [ \"GET\" ]\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/api/{version}/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n
+        \       \"DownstreamHostAndPorts\": [\r\n          {\r\n            \"Host\":
+        \"basket\",\r\n            \"Port\": 80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\":
+        \"/api/{version}/b/{everything}\",\r\n        \"UpstreamHttpMethod\": [],\r\n
+        \       \"AuthenticationOptions\": {\r\n          \"AuthenticationProviderKey\":
+        \"IdentityApiKey\",\r\n          \"AllowedScopes\": []\r\n        }\r\n      },\r\n
+        \     {\r\n        \"DownstreamPathTemplate\": \"/api/{version}/{everything}\",\r\n
+        \       \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"ordering\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/api/{version}/o/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": [],\r\n        \"AuthenticationOptions\":
+        {\r\n          \"AuthenticationProviderKey\": \"IdentityApiKey\",\r\n          \"AllowedScopes\":
+        []\r\n        }\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"mobileshoppingagg\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": [ \"POST\", \"PUT\", \"GET\" ],\r\n        \"AuthenticationOptions\":
+        {\r\n          \"AuthenticationProviderKey\": \"IdentityApiKey\",\r\n          \"AllowedScopes\":
+        []\r\n        }\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"ordering\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/orders-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"basket\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/basket-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"catalog\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/catalog-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"marketing\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/marketing-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"payment\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/payment-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"locations.api\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/location-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      }\r\n  \r\n    ],\r\n      \"GlobalConfiguration\":
+        {\r\n        \"RequestIdKey\": \"OcRequestId\",\r\n        \"AdministrationPath\":
+        \"/administration\"\r\n      }\r\n    }\r\n    "
+      wm: "{\r\n  \"ReRoutes\": [\r\n    {\r\n      \"DownstreamPathTemplate\": \"/api/{version}/{everything}\",\r\n
+        \     \"DownstreamScheme\": \"http\",\r\n      \"DownstreamHostAndPorts\":
+        [\r\n        {\r\n          \"Host\": \"marketing\",\r\n          \"Port\":
+        80\r\n        }\r\n      ],\r\n      \"UpstreamPathTemplate\": \"/api/{version}/m/{everything}\",\r\n
+        \     \"UpstreamHttpMethod\": []\r\n    },\r\n    {\r\n      \"DownstreamPathTemplate\":
+        \"/api/{version}/{everything}\",\r\n      \"DownstreamScheme\": \"http\",\r\n
+        \     \"DownstreamHostAndPorts\": [\r\n        {\r\n          \"Host\": \"locations\",\r\n
+        \         \"Port\": 80\r\n        }\r\n      ],\r\n      \"UpstreamPathTemplate\":
+        \"/api/{version}/l/{everything}\",\r\n      \"UpstreamHttpMethod\": []\r\n
+        \   }\r\n\r\n  ],\r\n  \"GlobalConfiguration\": {\r\n    \"RequestIdKey\":
+        \"OcRequestId\",\r\n    \"AdministrationPath\": \"/administration\"\r\n  }\r\n}\r\n
+        \ "
+      ws: "{\r\n    \"ReRoutes\": [\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/api/{version}/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n
+        \       \"DownstreamHostAndPorts\": [\r\n          {\r\n            \"Host\":
+        \"catalog\",\r\n            \"Port\": 80\r\n          }\r\n        ],\r\n
+        \       \"UpstreamPathTemplate\": \"/api/{version}/c/{everything}\",\r\n        \"UpstreamHttpMethod\":
+        [ \"GET\" ]\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/api/{version}/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n
+        \       \"DownstreamHostAndPorts\": [\r\n          {\r\n            \"Host\":
+        \"basket\",\r\n            \"Port\": 80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\":
+        \"/api/{version}/b/{everything}\",\r\n        \"UpstreamHttpMethod\": [],\r\n
+        \       \"AuthenticationOptions\": {\r\n          \"AuthenticationProviderKey\":
+        \"IdentityApiKey\",\r\n          \"AllowedScopes\": []\r\n        }\r\n      },\r\n
+        \     {\r\n        \"DownstreamPathTemplate\": \"/api/{version}/{everything}\",\r\n
+        \       \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"ordering\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/api/{version}/o/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": [],\r\n        \"AuthenticationOptions\":
+        {\r\n          \"AuthenticationProviderKey\": \"IdentityApiKey\",\r\n          \"AllowedScopes\":
+        []\r\n        }\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"webshoppingagg\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": [ \"POST\", \"PUT\", \"GET\" ],\r\n        \"AuthenticationOptions\":
+        {\r\n          \"AuthenticationProviderKey\": \"IdentityApiKey\",\r\n          \"AllowedScopes\":
+        []\r\n        }\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"ordering\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/orders-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n          {\r\n      \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n      \"DownstreamScheme\": \"http\",\r\n      \"DownstreamHostAndPorts\":
+        [\r\n        {\r\n          \"Host\": \"ordering-signalrhub\",\r\n          \"Port\":
+        80\r\n        }\r\n      ],\r\n        \"UpstreamPathTemplate\": \"/hub/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"basket\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/basket-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"catalog\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/catalog-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"marketing\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/marketing-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"payment\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/payment-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      },\r\n      {\r\n        \"DownstreamPathTemplate\":
+        \"/{everything}\",\r\n        \"DownstreamScheme\": \"http\",\r\n        \"DownstreamHostAndPorts\":
+        [\r\n          {\r\n            \"Host\": \"locations.api\",\r\n            \"Port\":
+        80\r\n          }\r\n        ],\r\n        \"UpstreamPathTemplate\": \"/location-api/{everything}\",\r\n
+        \       \"UpstreamHttpMethod\": []\r\n      }\r\n  \r\n    ],\r\n      \"GlobalConfiguration\":
+        {\r\n        \"RequestIdKey\": \"OcRequestId\",\r\n        \"AdministrationPath\":
+        \"/administration\"\r\n      }\r\n    }\r\n    "
+    metadata: {}
+  placement:
+    clusters:
+    - name: {{ .Values.context.public.name }}
+    - name: {{ .Values.context.private.name }}
