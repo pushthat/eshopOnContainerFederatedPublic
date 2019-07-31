@@ -85,8 +85,8 @@ spec:
               items:
               - key: mm
                 path: configuration.json
-          # imagePullSecrets:
-          # - name: {{ .Values.image.registrySecret }}
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
   placement:
     clusters:
     - name: {{ .Values.context.public.name }}
@@ -188,8 +188,8 @@ spec:
               items:
               - key: ms
                 path: configuration.json
-          # imagePullSecrets:
-          # - name: {{ .Values.image.registrySecret }}
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
   placement:
     clusters:
     - name: {{ .Values.context.public.name }}
@@ -291,8 +291,8 @@ spec:
               items:
               - key: wm
                 path: configuration.json
-          # imagePullSecrets:
-          # - name: {{ .Values.image.registrySecret }}
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
   placement:
     clusters:
     - name: {{ .Values.context.public.name }}
@@ -404,8 +404,8 @@ spec:
               items:
               - key: ws
                 path: configuration.json
-          # imagePullSecrets:
-          # - name: {{ .Values.image.registrySecret }}
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
   placement:
     clusters:
     - name: {{ .Values.context.public.name }}
@@ -497,8 +497,8 @@ spec:
               items:
               - key: mm
                 path: configuration.json
-          # imagePullSecrets:
-          # - name: {{ .Values.image.registrySecret }}
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
   placement:
     clusters:
     - name: {{ .Values.context.private.name }}
@@ -600,8 +600,8 @@ spec:
               items:
               - key: ms
                 path: configuration.json
-          # imagePullSecrets:
-          # - name: {{ .Values.image.registrySecret }}
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
   placement:
     clusters:
     - name: {{ .Values.context.private.name }}
@@ -703,8 +703,8 @@ spec:
               items:
               - key: wm
                 path: configuration.json
-          # imagePullSecrets:
-          # - name: {{ .Values.image.registrySecret }}
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
   placement:
     clusters:
     - name: {{ .Values.context.private.name }}
@@ -806,8 +806,8 @@ spec:
               items:
               - key: ws
                 path: configuration.json
-          # imagePullSecrets:
-          # - name: {{ .Values.image.registrySecret }}
+          imagePullSecrets:
+          - name: {{ .Values.image.registrySecret }}
   placement:
     clusters:
     - name: {{ .Values.context.private.name }}
